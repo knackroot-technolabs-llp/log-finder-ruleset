@@ -53,7 +53,7 @@ export const defaultMsgAction = (msg: Message) => {
     match: [],
   }
 
-  if (msg["@type"].includes("MsgExecuteContract")) {
+  if (msg["@type"]?.includes("MsgExecuteContract")) {
     const contract = msg?.contract
     const executeMsg = msg?.execute_msg || msg?.msg
 
@@ -79,11 +79,15 @@ export const defaultMsgAction = (msg: Message) => {
       }
     }
   } else {
+    let canonicalMsg = ''
+    if (msg?.constructor?.name === 'MsgCreateUser') {
+      canonicalMsg = `Username '${msg.username}' is now registered to '${msg.creator}' address`
+    }
     const type = msg?.["@type"]
     const msgType = type?.split("Msg")
     const transformed: Action = {
-      msgType: `terra/${msgType?.[0] || "terra"}`,
-      canonicalMsg: ["Msg" + msgType?.[msgType?.length - 1] || "Unknown tx"],
+      msgType: `orbitium/${msgType?.[0] || "orbitium"}`,
+      canonicalMsg: [canonicalMsg || "Msg" + msgType?.[msgType?.length - 1] || "Unknown tx"],
       payload: fragment,
     }
 
@@ -132,4 +136,4 @@ export const formatLogs = (
 }
 
 export const attachDenom = (string: string) =>
-  string.includes("uluna") ? `${string}` : `${string}uluna`
+  string.includes("uorb") ? `${string}` : `${string}uorb`

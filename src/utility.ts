@@ -87,7 +87,7 @@ export const defaultMsgAction = (msg: Message) => {
     const msgType = type?.split("Msg")
     const transformed: Action = {
       msgType: `orbitium/${msgType?.[0] || "orbitium"}`,
-      canonicalMsg: [canonicalMsg || "Msg" + msgType?.[msgType?.length - 1] || "Unknown tx"],
+      canonicalMsg: [canonicalMsg || (msgType ? "Msg" + msgType?.[msgType?.length - 1] : "Unknown tx")],
       payload: fragment,
     }
 

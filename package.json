@@ -1,6 +1,6 @@
 {
   "name": "orbitium-log-finder-ruleset",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "dist/index.js",
   "author": "",

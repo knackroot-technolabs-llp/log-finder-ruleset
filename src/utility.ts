@@ -81,7 +81,7 @@ export const defaultMsgAction = (msg: Message) => {
   } else {
     let canonicalMsg = ''
     if (msg?.username && msg?.creator && msg?.faceId) {
-      canonicalMsg = `Username '${msg.username}' is now registered to '${msg.creator}' address`
+      canonicalMsg = `Username '${msg.username}' is now registered to ${msg.creator} `
     }
     const type = msg?.["@type"]
     const msgType = type?.split("Msg")

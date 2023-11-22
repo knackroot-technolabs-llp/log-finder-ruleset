@@ -1,8 +1,10 @@
-import {
-  ReturningLogFinderTransformer,
-  LogFinderRule,
-  LogFragment,
-} from "@terra-money/log-finder"
+// import {
+//   ReturningLogFinderTransformer,
+//   LogFinderRule,
+//   LogFragment,
+// } from "@terra-money/log-finder"
+
+import { LogFinderRule, LogFragment, ReturningLogFinderTransformer } from "./log-finder/types"
 
 export interface Action {
   msgType: string

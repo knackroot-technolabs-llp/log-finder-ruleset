@@ -10,3 +10,5 @@ export type {
   Action,
   Amount,
 } from "./types"
+
+export * from './log-finder';

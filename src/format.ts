@@ -1,4 +1,4 @@
-import { ReturningLogFinderResult } from "@terra-money/log-finder"
+// import { ReturningLogFinderResult } from "@terra-money/log-finder"
 import { collector } from "./collector"
 import { defaultMsgAction, defaultMsgsAction, formatLogs } from "./utility"
 import {
@@ -11,6 +11,7 @@ import {
   TxLog,
   Message,
 } from "./types"
+import { ReturningLogFinderResult } from "./log-finder/types"
 
 export const getTxCanonicalMsgs = (
   txInfo: Transaction,

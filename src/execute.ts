@@ -1,4 +1,5 @@
-import { createReturningLogFinder } from "@terra-money/log-finder"
+// import { createReturningLogFinder } from "@terra-money/log-finder"
+import { createReturningLogFinder } from "./log-finder"
 import {
   LogFindersAmountRuleSet,
   LogFindersActionRuleSet,

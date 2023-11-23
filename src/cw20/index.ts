@@ -307,6 +307,16 @@ const rules = {
       ["from"]
     ],
   },
+  withdrawORBRewardsRule:{
+    type:"lp-rewards-withdrawn",
+    attributes:[
+      ["address"],
+      ["timestamp"],
+      ["lp-reward-amount"],
+      ["liquidity-token"],
+      ["c2e-id"],
+      ["c2e-validfrom"]]
+  }
 }
 
 const create = () => {
@@ -491,6 +501,16 @@ const create = () => {
     })
   }}
 
+  const withdrawORBRewardsRule : LogFindersActionRuleSet = {
+    rule : rules.withdrawORBRewardsRule,
+    transform: (fragment,matched) =>({
+      msgType : "WithdrawORBRewards",
+      canonicalMsg:[
+        `Withdrew ${Number(matched[2].value)/1000000} ORB as reward for provided liquidity in ${matched[3].value} `,
+      ],
+      payload: fragment,
+    })
+  }
 
   return [
     provideLiquidityRuleSet,
@@ -508,7 +528,8 @@ const create = () => {
     wasmSwapRule,
     wasmAllowanceRule,
     wasmProvideRule,
-    wasmWithdrawRule
+    wasmWithdrawRule,
+    withdrawORBRewardsRule
   ]
 }
 

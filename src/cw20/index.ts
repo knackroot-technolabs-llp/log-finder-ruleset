@@ -231,6 +231,112 @@ const rules = {
       ["amount"],
     ],
   },
+  wasmSwapRuleTypeA : {
+    type: "wasm",
+    attributes: [
+      ["_contract_address"],
+      ["action"],
+      ["sender"],
+      ["receiver"],
+      ["offer_asset"],
+      ["ask_asset"],
+      ["offer_amount"],
+      ["return_amount"],
+      ["spread_amount"],
+      ["commission_amount"],
+      ["_contract_address"],
+      ["action"],
+      ["amount"],
+      ["from"],
+      ["to"]
+    ],
+  },
+  wasmSwapRuleTypeB : {
+    type: "wasm",
+    attributes: [
+      ["_contract_address"],
+      ["action"],
+      ["from"],
+      ["to"],
+      ["amount"],
+      ["_contract_address"],
+      ["action"],
+      ["ask_asset"],
+      ["commission_amount"],
+      ["offer_amount"],
+      ["offer_asset"],
+      ["receiver"],
+      ["return_amount"],
+      ["sender"],
+      ["spread_amount"]
+    ],
+  },
+  wasmAllowanceRule : {
+    type: "wasm",
+    attributes: [
+      ["_contract_address"],
+      ["action"],
+      ["owner"],
+      ["spender"],
+      ["amount"],
+     
+    ],
+  },
+  wasmProvideRule : {
+    type: "wasm",
+    attributes: [
+      ["_contract_address"],
+      ["action"],
+      ["sender"],
+      ["receiver"],
+      ["assets"],
+      ["share"],
+      ["_contract_address"],
+      ["action"],
+      ["amount"],
+      ["by"],
+      ["from"],
+      ["to"],
+      ["_contract_address"],//12
+      ["action"],//13
+      ["amount"],//14
+      ["to"]//15
+    ],
+  },
+  wasmWithdrawRule : {
+    type: "wasm",
+    attributes: [
+      ["_contract_address"],
+      ["action"],
+      ["from"],
+      ["to"],
+      ["amount"],
+      ["_contract_address"],
+      ["action"],
+      ["refund_assets"],
+      ["sender"],
+      ["withdrawn_share"],
+      ["_contract_address"],
+      ["action"],
+      ["amount"],
+      ["from"],
+      ["to"],
+      ["_contract_address"],
+      ["action"],
+      ["amount"],
+      ["from"]
+    ],
+  },
+  withdrawORBRewardsRule:{
+    type:"lp-rewards-withdrawn",
+    attributes:[
+      ["address"],
+      ["timestamp"],
+      ["lp-reward-amount"],
+      ["liquidity-token"],
+      ["c2e-id"],
+      ["c2e-validfrom"]]
+  }
 }
 
 const create = () => {
@@ -373,6 +479,70 @@ const create = () => {
     }),
   }
 
+  const wasmSwapRuleTypeA : LogFindersActionRuleSet = {
+    rule : rules.wasmSwapRuleTypeA,
+    transform: (fragment,matched) =>({
+      msgType : "swap",
+      canonicalMsg:[
+        `Swapped ${matched[6].value}${matched[4].value} to ${matched[7].value}${matched[5].value} with the spread of ${matched[8].value}${matched[5].value}`,
+      ],
+      payload: fragment,
+    })
+  }
+
+  const wasmSwapRuleTypeB : LogFindersActionRuleSet = {
+    rule : rules.wasmSwapRuleTypeB,
+    transform: (fragment,matched) =>({
+      msgType : "swap",
+      canonicalMsg:[
+        `Swapped ${matched[9].value}${matched[10].value} to ${matched[12].value}${matched[7].value} with the spread of ${matched[14].value}${matched[7].value}`,
+      ],
+      payload: fragment,
+    })
+  }
+
+  const wasmAllowanceRule : LogFindersActionRuleSet = {
+    rule : rules.wasmAllowanceRule,
+    transform: (fragment) =>({
+      msgType : "Allowance",
+      canonicalMsg:[''],
+      payload: fragment,
+    })
+  }
+
+  const wasmProvideRule : LogFindersActionRuleSet = {
+    rule : rules.wasmProvideRule,
+    transform: (fragment,matched) =>{   
+      const assestArray: string[] = matched[4].value.split(",")
+      return ({
+      msgType : "Provide",
+      canonicalMsg:[`Provided ${assestArray[0]} and${assestArray[1]} Received ${Number(matched[14].value)/1000000} LP Tokens` ],
+      payload: fragment,
+    })
+  }}
+
+  const wasmWithdrawRule : LogFindersActionRuleSet = {
+    rule : rules.wasmWithdrawRule,
+    transform: (fragment,matched) =>{  
+      const assestArray: string[] = matched[7].value.split(",") 
+      return ({
+      msgType : "Withdraw",
+      canonicalMsg:[`withdrew ${assestArray[0]} and${assestArray[1]} against ${Number(matched[4].value)/1000000} LP Tokens` ],
+      payload: fragment,
+    })
+  }}
+
+  const withdrawORBRewardsRule : LogFindersActionRuleSet = {
+    rule : rules.withdrawORBRewardsRule,
+    transform: (fragment,matched) =>({
+      msgType : "WithdrawORBRewards",
+      canonicalMsg:[
+        `Withdrew ${Number(matched[2].value)/1000000} ORB as reward for provided liquidity in ${matched[3].value} `,
+      ],
+      payload: fragment,
+    })
+  }
+
   return [
     provideLiquidityRuleSet,
     provideLiquidityRuleSetTypeB,
@@ -386,6 +556,12 @@ const create = () => {
     wasmWithdrawLiquidityRuleSetTypeB,
     wasmWithdrawLiquidityRuleSetTypeC,
     wasmTransferRuleSet,
+    wasmSwapRuleTypeA,
+    wasmSwapRuleTypeB,
+    wasmAllowanceRule,
+    wasmProvideRule,
+    wasmWithdrawRule,
+    withdrawORBRewardsRule
   ]
 }
 

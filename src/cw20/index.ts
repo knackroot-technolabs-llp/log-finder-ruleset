@@ -231,7 +231,7 @@ const rules = {
       ["amount"],
     ],
   },
-  wasmSwapRule : {
+  wasmSwapRuleTypeA : {
     type: "wasm",
     attributes: [
       ["_contract_address"],
@@ -249,6 +249,26 @@ const rules = {
       ["amount"],
       ["from"],
       ["to"]
+    ],
+  },
+  wasmSwapRuleTypeB : {
+    type: "wasm",
+    attributes: [
+      ["_contract_address"],
+      ["action"],
+      ["from"],
+      ["to"],
+      ["amount"],
+      ["_contract_address"],
+      ["action"],
+      ["ask_asset"],
+      ["commission_amount"],
+      ["offer_amount"],
+      ["offer_asset"],
+      ["receiver"],
+      ["return_amount"],
+      ["sender"],
+      ["spread_amount"]
     ],
   },
   wasmAllowanceRule : {
@@ -459,12 +479,23 @@ const create = () => {
     }),
   }
 
-  const wasmSwapRule : LogFindersActionRuleSet = {
-    rule : rules.wasmSwapRule,
+  const wasmSwapRuleTypeA : LogFindersActionRuleSet = {
+    rule : rules.wasmSwapRuleTypeA,
     transform: (fragment,matched) =>({
       msgType : "swap",
       canonicalMsg:[
         `Swapped ${matched[6].value}${matched[4].value} to ${matched[7].value}${matched[5].value} with the spread of ${matched[8].value}${matched[5].value}`,
+      ],
+      payload: fragment,
+    })
+  }
+
+  const wasmSwapRuleTypeB : LogFindersActionRuleSet = {
+    rule : rules.wasmSwapRuleTypeB,
+    transform: (fragment,matched) =>({
+      msgType : "swap",
+      canonicalMsg:[
+        `Swapped ${matched[9].value}${matched[10].value} to ${matched[12].value}${matched[7].value} with the spread of ${matched[14].value}${matched[7].value}`,
       ],
       payload: fragment,
     })
@@ -525,7 +556,8 @@ const create = () => {
     wasmWithdrawLiquidityRuleSetTypeB,
     wasmWithdrawLiquidityRuleSetTypeC,
     wasmTransferRuleSet,
-    wasmSwapRule,
+    wasmSwapRuleTypeA,
+    wasmSwapRuleTypeB,
     wasmAllowanceRule,
     wasmProvideRule,
     wasmWithdrawRule,
